@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>게시글 상세 보기</title>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <nav class="bg-white shadow p-4 mb-6">
+    <div class="max-w-4xl mx-auto flex justify-between">
+      <a href="/" class="font-bold text-lg">🏠 게시판</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow space-y-4">
+    <h1 class="text-2xl font-semibold">해킹 공부 중</h1>
+    <p class="text-sm text-gray-500">작성자: user456 | 작성일: 2025-04-04</p>
+
+    <div class="prose max-w-none">
+      <p>이 게시글은 user456이 작성했지만, 권한 체크 없이 누구나 접근할 수 있습니다.</p>
+      <p>다음과 같은 스크립트가 포함될 수 있습니다:</p>
+      <div class="bg-gray-100 p-2 rounded font-mono text-sm text-red-600">
+        &lt;script&gt;alert('XSS!')&lt;/script&gt;
+      </div>
+    </div>
+
+    <div class="flex space-x-2">
+      <a href="/edit?id=1" class="px-4 py-2 bg-blue-600 text-white rounded">수정</a>
+      <form action="/delete" method="POST">
+        <input type="hidden" name="id" value="1" />
+        <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">삭제</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

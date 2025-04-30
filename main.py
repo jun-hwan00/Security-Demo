@@ -7,6 +7,7 @@ from database import SessionLocal, engine
 from models import Base, Article, User
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
+from sqlalchemy import text
 
 Base.metadata.create_all(bind=engine)
 
@@ -87,8 +88,19 @@ async def logout(request: Request):
     return RedirectResponse(url="/login", status_code=302)
 
 @app.get("/search", response_class=HTMLResponse)
-async def search_page(request: Request):
-    return templates.TemplateResponse("search.html", {"request": request})
+async def search_page(request: Request, search: str = ""):
+    db: Session = SessionLocal()
+    try:
+        query = f"SELECT id, title FROM articles WHERE title LIKE '%%{search}%%'"
+        result = db.execute(text(query))
+        posts = result.fetchall()
+        return templates.TemplateResponse("search.html", {
+            "request": request,
+            "posts": posts,
+            "search": search
+        })
+    finally:
+        db.close()
 
 @app.get("/post", response_class=HTMLResponse)
 async def post_page(request: Request, id: int):
