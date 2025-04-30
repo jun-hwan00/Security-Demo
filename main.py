@@ -102,13 +102,14 @@ async def search_page(request: Request, search: str = ""):
     finally:
         db.close()
 
-@app.get("/post", response_class=HTMLResponse)
-async def post_page(request: Request, id: int):
+@app.get("/posts/{id}", response_class=HTMLResponse)
+async def post_detail(request: Request, id: int):
     db: Session = SessionLocal()
     post = db.query(Article).filter(Article.id == id).first()
     if not post:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
     return templates.TemplateResponse("post.html", {"request": request, "post": post})
+
 
 @app.post("/create", response_class=HTMLResponse)
 async def create_post(request: Request, title: str = Form(...), content: str = Form(...)):
