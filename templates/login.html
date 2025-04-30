@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>로그인</title>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <nav class="bg-white shadow p-4 mb-6">
+    <div class="max-w-4xl mx-auto flex justify-between">
+      <a href="/" class="font-bold text-lg">🏠 게시판</a>
+    </div>
+  </nav>
+
+  <main class="max-w-md mx-auto bg-white p-6 rounded-xl shadow space-y-6">
+    <h1 class="text-2xl font-semibold text-center">로그인</h1>
+    <form action="/login" method="POST" class="space-y-4">
+      <div>
+        <label for="username" class="block mb-1">아이디</label>
+        <input type="text" id="username" name="username" class="w-full p-2 border rounded" required>
+      </div>
+      <div>
+        <label for="password" class="block mb-1">비밀번호</label>
+        <input type="password" id="password" name="password" class="w-full p-2 border rounded" required>
+      </div>
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">로그인</button>
+    </form>
+    <p class="text-sm text-gray-500 text-center">비밀번호는 서버에서 MD5 해시로 비교됩니다.</p>
+  </main>
+</body>
+</html>
