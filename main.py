@@ -19,16 +19,19 @@ middleware = [
 ]
 app = FastAPI(middleware=middleware)
 
+# 홈페이지 게시글 목록록
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     db: Session = SessionLocal()
     posts = db.query(Article).all()
     return templates.TemplateResponse("index.html", {"request": request, "posts": posts})
 
+# 로그인 페이지 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+# 프로필 페이지지
 @app.get("/profile", response_class=HTMLResponse)
 async def profile_page(request: Request):
     user_id = request.session.get("user_id")
@@ -43,11 +46,12 @@ async def profile_page(request: Request):
             return RedirectResponse(url="/login", status_code=302)
     finally:
         db.close()
-
+# 회원가입 페이지 
 @app.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
     return templates.TemplateResponse("signup.html", {"request": request})
 
+# 회원가입 처리리
 @app.post("/signup")
 async def register_user(request: Request, username: str = Form(...), password: str = Form(...), email: str = Form(None)):
     db: Session = SessionLocal()
@@ -64,6 +68,7 @@ async def register_user(request: Request, username: str = Form(...), password: s
     finally:
         db.close()
 
+# 로그인 처리리
 @app.post("/login")
 async def login_process(request: Request, username: str = Form(...), password: str = Form(...)):
     db: Session = SessionLocal()
@@ -82,11 +87,13 @@ async def login_process(request: Request, username: str = Form(...), password: s
     finally:
         db.close()
 
+# 로그아웃웃
 @app.get("/logout")
 async def logout(request: Request):
     request.session.clear()
     return RedirectResponse(url="/login", status_code=302)
 
+# 검색 기능 페이지지
 @app.get("/search", response_class=HTMLResponse)
 async def search_page(request: Request, search: str = ""):
     db: Session = SessionLocal()
@@ -102,6 +109,7 @@ async def search_page(request: Request, search: str = ""):
     finally:
         db.close()
 
+# 게시글 상세 페이지 
 @app.get("/posts/{id}", response_class=HTMLResponse)
 async def post_detail(request: Request, id: int):
     db: Session = SessionLocal()
@@ -110,7 +118,7 @@ async def post_detail(request: Request, id: int):
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
     return templates.TemplateResponse("post.html", {"request": request, "post": post})
 
-
+# 게시글 작성 페이지 
 @app.post("/create", response_class=HTMLResponse)
 async def create_post(request: Request, title: str = Form(...), content: str = Form(...)):
     user_id = request.session.get("user_id")
@@ -123,6 +131,7 @@ async def create_post(request: Request, title: str = Form(...), content: str = F
     db.commit()
     return RedirectResponse(url="/", status_code=302)
 
+# 게시글 수정 페이지 
 @app.get("/posts/{id}/edit", response_class=HTMLResponse)
 async def edit_page(request: Request, id: int):
     db: Session = SessionLocal()
@@ -131,6 +140,7 @@ async def edit_page(request: Request, id: int):
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
     return templates.TemplateResponse("edit.html", {"request": request, "post": post})
 
+# 게시글 수정 처리 
 @app.post("/posts/{id}/edit", response_class=HTMLResponse)
 async def update_post(request: Request, id: int, title: str = Form(...), content: str = Form(...)):
     db: Session = SessionLocal()
@@ -144,6 +154,7 @@ async def update_post(request: Request, id: int, title: str = Form(...), content
     db.commit()
     return RedirectResponse(url=f"/post?id={id}", status_code=302)
 
+# 게시글 삭제 처리 
 @app.post("/posts/{id}/delete", response_class=HTMLResponse)
 async def delete_post(request: Request, id: int):
     db: Session = SessionLocal()
@@ -151,7 +162,6 @@ async def delete_post(request: Request, id: int):
     if not post:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
 
-    # Broken Access Control 취약점 재현: 작성자 확인 로직 없음
     db.delete(post)
     db.commit()
     return RedirectResponse(url="/", status_code=302)
