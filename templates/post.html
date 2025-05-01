@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>{{ post.title }}</title>
+    <title>{{ post.title | safe }}</title>
 </head>
 <body class="bg-gray-50 text-gray-800">
     <nav class="bg-white shadow p-4 mb-6">
@@ -18,7 +18,7 @@
         <p class="text-sm text-gray-500">작성자: {{ post.author.username if post.author else "익명" }} | 작성일: {{ post.created_at }}</p>
 
         <div class="prose max-w-none">
-            {{ post.content }}
+            {{ post.content | safe }}
         </div>
 
         <div class="flex space-x-2">
