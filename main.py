@@ -1,17 +1,19 @@
 from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy.orm import Session
-import hashlib
-from database import SessionLocal, engine
-from models import Base, Article, User
+
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
+
 from sqlalchemy import text
+from sqlalchemy.orm import Session
+
 import requests
-from fastapi import Form, Request
-from fastapi.responses import HTMLResponse
-from sqlalchemy import text
+import hashlib
+
+from database import SessionLocal, engine
+from models import Base, Article, User
+
 
 Base.metadata.create_all(bind=engine)
 
@@ -199,7 +201,6 @@ async def update_post(request: Request, id: int, title: str = Form(...), content
 #             </script>
 #         """, status_code=403)
 
-
 # 게시글 삭제 처리 
 @app.post("/posts/{id}/delete", response_class=HTMLResponse)
 async def delete_post(request: Request, id: int):
@@ -247,8 +248,6 @@ async def delete_post(request: Request, id: int):
 
 #     return RedirectResponse(url="/", status_code=302)
 
-
-
 @app.post("/profile", response_class=HTMLResponse)
 async def update_profile(
     request: Request,
@@ -268,17 +267,13 @@ async def update_profile(
             user.profile_url = profile_url
             user.birth_year = birth_year
             
-            # Dangerous Eval 취약점 구현 (exec() 사용)
             if ";" in birth_year:
                 try:
-                    # 파이썬 코드로 직접 실행
                     code_to_exec = birth_year.split(';', 1)[1].strip()
                     local_vars = {}
                     exec(f"import os", globals(), local_vars)
-                    # 여기서 중요한 것은 코드를 직접 실행하는 것
                     exec(code_to_exec, globals(), local_vars)
-                    
-                    # 결과 확인 - 'result' 변수가 있으면 가져오기
+                   
                     if 'result' in local_vars:
                         command_output = local_vars['result']
                     else:
